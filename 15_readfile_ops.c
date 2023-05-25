@@ -16,7 +16,8 @@ char *read_textfile(char *filename)
 	if (!filename)
 		return (NULL);
 	buffer = do_mem(4096, NULL);
-	of = open(filename, O_RDONLY);
+	/* open file */
+	of = open(filename);
 	if (of == -1)
 	{
 	do_mem(0, buffer);

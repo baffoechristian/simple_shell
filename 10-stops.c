@@ -33,8 +33,8 @@ char *_itoa(int num)
 	int x = 0, neg = 0, c_num = num, len, rem = 0;
 	char *str;
 
-	for (len = 0; c_num; c_num /= 10);
 
+	for (len = 0; c_num; c_num /= 10);
 	if (num == 0)
 	{
 		str = do_mem(2 * sizeof(char), NULL);
