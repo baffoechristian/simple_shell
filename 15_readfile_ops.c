@@ -1,38 +1,50 @@
 #include "shell.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 
 /**
-  * read_textfile - reads a text file returns back
-  * @filename: name of file to read to return
-  * Return: return 0 if unsuccessful
+  * read_textfile - reads a text file and returns its contents as a string
+  * @filename: name of the file to read
+  * Return: pointer to the allocated buffer containing the file contents,
+  *         or NULL if unsuccessful
   */
 char *read_textfile(char *filename)
 {
 	char *buffer;
-	int of;
-	ssize_t lRead;
+	int fd;
+	ssize_t bytes_read;
 
 	if (!filename)
 		return (NULL);
-	buffer = do_mem(4096, NULL);
-	/* open file */
-	of = open(filename);
-	if (of == -1)
+
+	buffer = malloc(4096 * sizeof(char));
+	if (buffer == NULL)
 	{
-	do_mem(0, buffer);
-	do_exit(2, _strcat("Can't open ", filename), 127);
+		perror("malloc");
+		exit(EXIT_FAILURE);
 	}
 
-	lRead = read(of, buffer, 4096);
-	if (lRead < 1)
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
 	{
-	do_mem(0, buffer);
-	close(of);
-		return (NULL);
+		perror("open");
+		free(buffer);
+		exit(EXIT_FAILURE);
 	}
 
-	close(of);
+	bytes_read = read(fd, buffer, 4096);
+	if (bytes_read < 0)
+	{
+		perror("read");
+		free(buffer);
+		close(fd);
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
 
 	return (buffer);
 }
+
